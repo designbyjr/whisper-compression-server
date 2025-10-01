@@ -53,8 +53,8 @@ sudo apt-get install zstd xz-utils
 
 ```bash
 # Clone repository
-git clone <your-repo-url>
-cd frontend
+git clone https://github.com/designbyjr/whisper-compression-server.git
+cd whisper-compression-server
 
 # Install dependencies
 npm install
