@@ -1,0 +1,52 @@
+{
+  "name": "fresh-react-ts",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start": "node start-dev.js",
+    "switch": "node switch-model.js",
+    "download-tiny": "./download-models.sh",
+    "download-small": "./download-whisper-small.sh",
+    "model-status": "node model-status.cjs",
+    "compress-models": "node compress-models.cjs",
+    "model-server-enhanced": "node model-server-enhanced.cjs",
+    "dev": "concurrently \"npm run model-server\" \"npm run dev-client\" --names \"MODEL,VITE\" --prefix-colors \"blue,green\"",
+    "dev-client": "vite",
+    "model-server": "node model-server.js",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@hpcc-js/wasm": "^2.26.2",
+    "@huggingface/transformers": "^3.0.0-alpha.19",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "fflate": "^0.8.2",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.544.0",
+    "lzma-js": "^1.0.1",
+    "radix-ui": "^1.4.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zstd-codec": "^0.1.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/react": "18.3.5",
+    "@types/react-dom": "18.3.0",
+    "@vitejs/plugin-react": "4.3.1",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
+    "typescript": "5.5.4",
+    "vite": "5.4.2"
+  }
+}

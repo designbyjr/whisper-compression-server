@@ -1,0 +1,14 @@
+{
+  "model_type": "whisper",
+  "model_name": "whisper-tiny",
+  "local_files": {
+    "config": "./config.json",
+    "tokenizer": "./tokenizer.json",
+    "generation_config": "./generation_config.json",
+    "encoder_model": "./onnx/encoder_model.onnx",
+    "decoder_model_merged": "./onnx/decoder_model_merged_q4.onnx",
+    "normalizer": "./normalizer.json",
+    "added_tokens": "./added_tokens.json",
+    "merges": "./merges.txt"
+  }
+}
