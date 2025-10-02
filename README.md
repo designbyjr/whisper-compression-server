@@ -66,13 +66,24 @@ npm install
 
 ### Running
 
-```bash
-# Start model server
-node model-server.js
+The frontend now loads Whisper model files from the CDN at
+[`https://ai-models.b-cdn.net`](https://ai-models.b-cdn.net) by default, so you can run the
+app without the local model server:
 
-# Start development server (in another terminal)
+```bash
 npm run dev
 ```
+
+If you need to serve the assets yourself (for offline testing or custom models), start the
+model server and point the frontend at it with environment variables:
+
+```bash
+node model-server.js
+VITE_WHISPER_MODEL_URL=http://localhost:3001/onnx-community/whisper-small npm run dev
+```
+
+You can also override `VITE_WHISPER_CHUNK_SERVER_URL` and set `VITE_WHISPER_CHUNKED=true`
+to re-enable the experimental chunked downloader against a compatible server.
 
 ## 🔧 Model Management
 

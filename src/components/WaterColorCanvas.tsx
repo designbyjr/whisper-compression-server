@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Mic, MicOff, Square } from 'lucide-react';
 import { SimpleCircularProgress } from '@/components/SimpleCircularProgress';
 
@@ -74,6 +74,14 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
   const animationFrameRef = useRef<number>();
   const [muteStartTime, setMuteStartTime] = useState<number | null>(null);
   const [detectedAccent, setDetectedAccent] = useState<string>('neutral');
+  const clampedSize = useMemo(() => {
+    if (!Number.isFinite(size)) {
+      return 300;
+    }
+    return Math.max(1, Math.min(320, Math.round(size)));
+  }, [size]);
+  const muteLabel = isMuted ? 'Unmute microphone' : 'Mute microphone';
+  const recordLabel = isRecording ? 'Stop recording' : 'Start recording';
   
   // Color schemes for different accents/regions
   const accentColorSchemes: Record<string, AccentColorScheme> = {
@@ -92,8 +100,8 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
   
   // Canvas animation state - centered circle that doesn't bounce
   const circleRef = useRef<Circle>({
-    x: size / 2,
-    y: size / 2,
+    x: clampedSize / 2,
+    y: clampedSize / 2,
     vx: 0, // No movement
     vy: 0, // No movement  
     baseR: 60, // Larger base size
@@ -105,8 +113,8 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
   
   // Initialize water layers
   useEffect(() => {
-    const centerX = size / 2;
-    const centerY = size / 2;
+    const centerX = clampedSize / 2;
+    const centerY = clampedSize / 2;
     
     waterLayersRef.current = [
       // Light blue layer
@@ -162,7 +170,7 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
         phase: Math.PI * 1.5
       }
     ];
-  }, [size]);
+  }, [clampedSize]);
   
   // Calculate progress from progressItems
   const validItems = progressItems.filter(item => 
@@ -211,9 +219,9 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
   
   // Update circle position based on canvas size changes
   useEffect(() => {
-    circleRef.current.x = size / 2;
-    circleRef.current.y = size / 2;
-  }, [size]);
+    circleRef.current.x = clampedSize / 2;
+    circleRef.current.y = clampedSize / 2;
+  }, [clampedSize]);
 
   const animate = useCallback(() => {
     const canvas = canvasRef.current;
@@ -306,8 +314,8 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = clampedSize;
+    canvas.height = clampedSize;
 
     // Prime background with clean white
     const ctx = canvas.getContext('2d');
@@ -326,7 +334,7 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [animate, size, modelReady]);
+  }, [animate, clampedSize, modelReady]);
 
   // Handle mute timeout
   useEffect(() => {
@@ -355,6 +363,7 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
             size={200}
             strokeWidth={16}
             className="drop-shadow-lg"
+            ariaLabel="Model loading progress"
           />
           <div className="text-center">
             <div className="text-xl font-bold text-gray-900">
@@ -365,21 +374,26 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
       ) : (
         <>
           {/* Canvas - Only show when model is ready */}
-          <div className="relative">
+          <div
+            className="relative"
+            style={{ width: `${clampedSize}px`, height: `${clampedSize}px` }}
+          >
             <canvas
               ref={canvasRef}
-              width={size}
-              height={size}
+              width={clampedSize}
+              height={clampedSize}
               className="rounded-3xl shadow-xl"
               style={{
                 background: '#ffffff',
                 filter: isRecording ? 'brightness(1.02)' : 'brightness(1)',
-                border: '1px solid rgba(148, 163, 184, 0.1)'
+                border: '1px solid rgba(148, 163, 184, 0.1)',
+                width: '100%',
+                height: '100%'
               }}
             />
-        
+
             {/* Center microphone icon - Show when model is ready */}
-            <div 
+            <div
               className="absolute inset-0 flex items-center justify-center pointer-events-none"
               style={{
                 color: isRecording && !isMuted ? '#fff' : isMuted ? '#ef4444' : '#6b7280',
@@ -410,7 +424,10 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
               }
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
+            aria-label={muteLabel}
+            title={muteLabel}
           >
+            <span className="sr-only">{muteLabel}</span>
             {isMuted ? (
               <MicOff className="w-5 h-5 mx-auto" />
             ) : (
@@ -432,7 +449,10 @@ export const WaterColorCanvas: React.FC<WaterColorCanvasProps> = ({
             }
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
+          aria-label={recordLabel}
+          title={recordLabel}
         >
+          <span className="sr-only">{recordLabel}</span>
           {isRecording ? (
             <Square className="w-6 h-6 mx-auto" />
           ) : (

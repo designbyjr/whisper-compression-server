@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  server: { 
+  server: {
     port: 5173,
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
@@ -30,6 +30,12 @@ export default defineConfig({
   // Configure asset handling for model files
   assetsInclude: ['**/*.onnx'],
   publicDir: 'public',
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setupTests.ts',
+    css: true,
+  },
 })
 
 

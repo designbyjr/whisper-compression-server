@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Square, Loader2, Volume2, Download, Copy, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,6 +14,8 @@ export const SpeechToText: React.FC = () => {
   const [transcriptions, setTranscriptions] = useState<TranscriberData[]>([]);
   const [currentTranscript, setCurrentTranscript] = useState<string>('');
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [canvasSize, setCanvasSize] = useState<number>(320);
   
   const {
     isRecording,
@@ -135,44 +137,51 @@ export const SpeechToText: React.FC = () => {
   const hasError = recordingError || transcriptionError;
   const isProcessing = isTranscribing || isModelLoading;
 
+  useEffect(() => {
+    const element = canvasContainerRef.current;
+    if (!element) {
+      return;
+    }
+
+    const updateSize = () => {
+      const rect = element.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+      const nextSize = Math.min(320, Math.max(1, Math.round(rect.width)));
+      setCanvasSize(nextSize);
+    };
+
+    updateSize();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateSize);
+      return () => {
+        window.removeEventListener('resize', updateSize);
+      };
+    }
+
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white" style={{
-      minHeight: '100vh',
-      backgroundColor: 'white',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '2rem'
-    }}>
+    <div className="min-h-screen bg-white px-4 py-10 sm:px-10 flex items-center">
       {/* Main Recording Interface */}
-      <div className="max-w-4xl mx-auto text-center space-y-12" style={{
-        maxWidth: '56rem',
-        margin: '0 auto',
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '3rem'
-      }}>
+      <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-12 text-center">
         {/* Title */}
         <div>
-          <h1 
-            className="text-4xl font-bold text-gray-900 mb-4"
-            style={{
-              fontSize: '2.25rem',
-              fontWeight: 'bold',
-              color: '#111827',
-              marginBottom: '1rem'
-            }}
+          <h1
+            className="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl"
           >
             Whisper Web Speech-to-Text
           </h1>
-          <p 
-            className="text-lg text-gray-600"
-            style={{
-              fontSize: '1.125rem',
-              color: '#6b7280'
-            }}
+          <p
+            className="text-base text-gray-600 sm:text-lg"
           >
             Click the microphone to start recording, then speak clearly. Your speech will be automatically transcribed using Whisper AI.
           </p>
@@ -181,34 +190,36 @@ export const SpeechToText: React.FC = () => {
         {/* Model Loading Progress is now handled by WaterColorCanvas */}
 
         {/* Water Color Canvas Recording Interface */}
-        <div className="flex flex-col items-center" style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}>
-          <WaterColorCanvas
-            isRecording={isRecording}
-            audioLevel={audioLevel}
-            onMicToggle={handleRecordingToggle}
-            onStop={handleStop}
-            onMuteToggle={handleMuteToggle}
-            disabled={isProcessing || !modelReady}
-            isMuted={isMuted}
-            size={320}
-            progressItems={progressItems}
-            isModelLoading={isModelLoading}
-            modelReady={modelReady}
-          />
-          
+        <div className="flex w-full flex-col items-center">
+          <div
+            ref={canvasContainerRef}
+            data-testid="canvas-container"
+            className="w-full max-w-[320px]"
+          >
+            <WaterColorCanvas
+              isRecording={isRecording}
+              audioLevel={audioLevel}
+              onMicToggle={handleRecordingToggle}
+              onStop={handleStop}
+              onMuteToggle={handleMuteToggle}
+              disabled={isProcessing || !modelReady}
+              isMuted={isMuted}
+              size={canvasSize}
+              progressItems={progressItems}
+              isModelLoading={isModelLoading}
+              modelReady={modelReady}
+            />
+          </div>
+
           {/* Additional Status */}
-          <div className="text-center mt-4" style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <div className="mt-4 text-center">
             {isRecording && (
-              <p className="text-gray-600 font-medium" style={{ color: '#6b7280', fontWeight: '500', fontSize: '0.9rem' }}>
+              <p className="text-sm font-medium text-gray-600 sm:text-base">
                 Duration: {formatDuration(duration)}
               </p>
             )}
             {isTranscribing && (
-              <p className="text-blue-600 font-medium" style={{ color: '#2563eb', fontWeight: '500', fontSize: '1rem' }}>🎵 Transcribing audio...</p>
+              <p className="text-base font-medium text-blue-600">🎵 Transcribing audio...</p>
             )}
           </div>
         </div>

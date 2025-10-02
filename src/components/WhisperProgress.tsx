@@ -85,6 +85,7 @@ export const WhisperProgress: React.FC<WhisperProgressProps> = ({
             value={displayProgress}
             size={120}
             strokeWidth={10}
+            ariaLabel="Model loading progress"
           />
           
           <div className="text-center">

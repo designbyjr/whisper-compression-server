@@ -5,20 +5,26 @@ interface SimpleCircularProgressProps {
   size?: number;
   strokeWidth?: number;
   className?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
 }
 
 export const SimpleCircularProgress: React.FC<SimpleCircularProgressProps> = ({
   value,
   size = 120,
   strokeWidth = 10,
-  className = ""
+  className = "",
+  ariaLabel,
+  ariaLabelledby,
 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (value / 100) * circumference;
+  const progressValue = Math.min(100, Math.max(0, Math.round(value)));
+  const label = ariaLabel || 'Loading progress';
 
   return (
-    <div 
+    <div
       style={{
         position: 'relative',
         width: size,
@@ -28,6 +34,12 @@ export const SimpleCircularProgress: React.FC<SimpleCircularProgressProps> = ({
         justifyContent: 'center'
       }}
       className={className}
+      role="progressbar"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={progressValue}
+      aria-label={ariaLabelledby ? undefined : label}
+      aria-labelledby={ariaLabelledby}
     >
       <svg
         width={size}
@@ -83,7 +95,7 @@ export const SimpleCircularProgress: React.FC<SimpleCircularProgressProps> = ({
           zIndex: 10
         }}
       >
-        {Math.round(value)}%
+        {progressValue}%
       </div>
     </div>
   );

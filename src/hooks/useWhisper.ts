@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getPreferredWhisperModelUrl } from "@/config/whisper";
 import { useWorker } from "./useWorker";
 
 // Check if device is mobile/tablet for model selection
@@ -29,9 +30,9 @@ const isMobileOrTablet = mobileTabletCheck();
 const ONLINE_MODEL = "onnx-community/whisper-small";
 const LOCAL_MODEL = "http://localhost:3001/onnx-community/whisper-small";
 
-// Whisper Small provides better accuracy than Tiny with reasonable performance
-// Using local LZMA compressed version for better performance and smaller size
-let DEFAULT_MODEL = LOCAL_MODEL;
+// Determine the preferred model location.
+// Falls back to the CDN when not running on localhost or when explicitly configured via env vars.
+const DEFAULT_MODEL = getPreferredWhisperModelUrl();
 
 interface ProgressItem {
     file: string;

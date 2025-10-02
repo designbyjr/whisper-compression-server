@@ -1,23 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useWorker } from "./useWorker";
 import { TranscriberData } from "./useWhisper";
-import { 
-  ChunkDownloadManager, 
+import {
+  ChunkDownloadManager,
   OverallProgress,
   formatBytes,
-  formatTime 
+  formatTime
 } from "../utils/chunkDownloader";
+import {
+  buildWhisperModelMap,
+  getPreferredChunkServerUrl,
+  getPreferredWhisperModelUrl,
+  shouldUseChunkedDownload,
+  WhisperModelVariant
+} from "@/config/whisper";
+
+const PREFERRED_MODEL_URL = getPreferredWhisperModelUrl();
+const MODEL_VARIANTS = buildWhisperModelMap(PREFERRED_MODEL_URL);
+const DEFAULT_MODEL_VARIANT: WhisperModelVariant = "tiny";
+const CHUNK_SERVER_URL = getPreferredChunkServerUrl();
+const CHUNKED_DOWNLOAD_ENABLED = shouldUseChunkedDownload(CHUNK_SERVER_URL);
 
 // Enhanced model configuration with chunked download support
 const ENHANCED_MODEL_CONFIG = {
-  chunkedDownloadEnabled: true,
-  serverUrl: 'http://localhost:3001',
+  chunkedDownloadEnabled: CHUNKED_DOWNLOAD_ENABLED,
+  serverUrl: CHUNK_SERVER_URL,
   fallbackToOriginal: true,
   compressionEnabled: true,
-  models: {
-    tiny: 'onnx-community/whisper-tiny',
-    small: 'onnx-community/whisper-small'
-  }
+  defaultVariant: DEFAULT_MODEL_VARIANT,
+  models: MODEL_VARIANTS
 };
 
 // Enhanced progress interface that combines original and chunked progress
@@ -191,14 +202,14 @@ export const useWhisperEnhanced = (): UseWhisperEnhancedReturn => {
   /**
    * Attempt chunked model download
    */
-  const attemptChunkedDownload = useCallback(async (modelName: string): Promise<boolean> => {
+  const attemptChunkedDownload = useCallback(async (modelVariant: WhisperModelVariant): Promise<boolean> => {
     if (!ENHANCED_MODEL_CONFIG.chunkedDownloadEnabled) {
       return false;
     }
 
     try {
-      console.log('🚀 Attempting chunked download for model:', modelName);
-      
+      console.log('🚀 Attempting chunked download for model variant:', modelVariant);
+
       // Create chunk download manager
       chunkDownloadManagerRef.current = new ChunkDownloadManager(
         ENHANCED_MODEL_CONFIG.serverUrl,
@@ -213,11 +224,11 @@ export const useWhisperEnhanced = (): UseWhisperEnhancedReturn => {
       }));
 
       // Download model using chunked approach
-      const modelUrls = await chunkDownloadManagerRef.current.downloadModel(modelName);
-      
+      const modelUrls = await chunkDownloadManagerRef.current.downloadModel(modelVariant);
+
       // Store URLs for worker to use
       modelUrlsRef.current = modelUrls;
-      
+
       console.log('✅ Chunked download successful, URLs available for worker');
       return true;
 
@@ -233,7 +244,7 @@ export const useWhisperEnhanced = (): UseWhisperEnhancedReturn => {
    */
   const initiateOriginalDownload = useCallback(() => {
     console.log('🔄 Initiating original download method');
-    
+
     setProgress(prev => ({
       ...prev,
       downloadMethod: 'fallback',
@@ -242,9 +253,9 @@ export const useWhisperEnhanced = (): UseWhisperEnhancedReturn => {
     }));
 
     // Use original worker-based download
-    const modelName = 'tiny'; // Default to tiny for fallback
+    const modelName = ENHANCED_MODEL_CONFIG.defaultVariant;
     const modelId = ENHANCED_MODEL_CONFIG.models[modelName];
-    
+
     webWorker.postMessage({
       type: 'preload',
       model: modelId
@@ -261,7 +272,7 @@ export const useWhisperEnhanced = (): UseWhisperEnhancedReturn => {
     console.log('🚀 Starting enhanced model preload...');
     
     // First, try chunked download
-    const modelName = 'tiny'; // Start with tiny model
+    const modelName = ENHANCED_MODEL_CONFIG.defaultVariant;
     const chunkedSuccess = await attemptChunkedDownload(modelName);
     
     if (!chunkedSuccess && ENHANCED_MODEL_CONFIG.fallbackToOriginal) {
@@ -375,10 +386,9 @@ export const useWhisperEnhanced = (): UseWhisperEnhancedReturn => {
         currentResolveRef.current = resolve;
         
         // Send to worker for transcription
-        const modelId = progress.downloadMethod === 'chunked' 
-          ? ENHANCED_MODEL_CONFIG.models.tiny // Use appropriate model
-          : ENHANCED_MODEL_CONFIG.models.tiny;
-          
+        const modelVariant = ENHANCED_MODEL_CONFIG.defaultVariant;
+        const modelId = ENHANCED_MODEL_CONFIG.models[modelVariant];
+
         webWorker.postMessage({
           audio: processedAudio,
           model: modelId,
