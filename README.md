@@ -75,15 +75,17 @@ npm run dev
 ```
 
 If you need to serve the assets yourself (for offline testing or custom models), start the
-model server and point the frontend at it with environment variables:
+model server and opt back into the localhost endpoints with the
+`VITE_WHISPER_USE_LOCAL_SERVER` flag:
 
 ```bash
 node model-server.js
-VITE_WHISPER_MODEL_URL=http://localhost:3001/onnx-community/whisper-small npm run dev
+VITE_WHISPER_USE_LOCAL_SERVER=true npm run dev
 ```
 
-You can also override `VITE_WHISPER_CHUNK_SERVER_URL` and set `VITE_WHISPER_CHUNKED=true`
-to re-enable the experimental chunked downloader against a compatible server.
+You can still override `VITE_WHISPER_MODEL_URL` or `VITE_WHISPER_CHUNK_SERVER_URL`
+explicitly, and set `VITE_WHISPER_CHUNKED=true` to re-enable the experimental chunked
+downloader against a compatible server.
 
 ## 🔧 Model Management
 

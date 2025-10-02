@@ -9,18 +9,24 @@ const trimOrUndefined = (value: string | undefined): string | undefined => {
   return trimmed.length > 0 ? trimmed : undefined;
 };
 
-const isLocalhost = (): boolean => {
-  if (typeof window === "undefined") {
+export const WHISPER_CDN_BASE_URL = "https://ai-models.b-cdn.net";
+export const WHISPER_CDN_MODEL_URL = `${WHISPER_CDN_BASE_URL}/onnx-community/whisper-small`;
+export const WHISPER_CDN_CHUNK_SERVER_URL = WHISPER_CDN_BASE_URL;
+export const WHISPER_LOCAL_MODEL_URL = "http://localhost:3001/onnx-community/whisper-small";
+export const WHISPER_LOCAL_CHUNK_SERVER_URL = "http://localhost:3001";
+
+const shouldPreferLocalServer = (): boolean => {
+  const envFlag = trimOrUndefined(WHISPER_ENV.VITE_WHISPER_USE_LOCAL_SERVER);
+  if (envFlag === "true") {
+    return true;
+  }
+
+  if (envFlag === "false") {
     return false;
   }
 
-  const { hostname } = window.location;
-  return hostname === "localhost" || hostname === "127.0.0.1";
+  return false;
 };
-
-export const WHISPER_CDN_BASE_URL = "https://ai-models.b-cdn.net";
-export const WHISPER_LOCAL_MODEL_URL = "http://localhost:3001/onnx-community/whisper-small";
-export const WHISPER_LOCAL_CHUNK_SERVER_URL = "http://localhost:3001";
 
 export const getPreferredWhisperModelUrl = (): string => {
   const envUrl = trimOrUndefined(WHISPER_ENV.VITE_WHISPER_MODEL_URL);
@@ -28,11 +34,11 @@ export const getPreferredWhisperModelUrl = (): string => {
     return envUrl;
   }
 
-  if (isLocalhost()) {
+  if (shouldPreferLocalServer()) {
     return WHISPER_LOCAL_MODEL_URL;
   }
 
-  return WHISPER_CDN_BASE_URL;
+  return WHISPER_CDN_MODEL_URL;
 };
 
 export const getPreferredChunkServerUrl = (): string => {
@@ -41,11 +47,11 @@ export const getPreferredChunkServerUrl = (): string => {
     return envUrl;
   }
 
-  if (isLocalhost()) {
+  if (shouldPreferLocalServer()) {
     return WHISPER_LOCAL_CHUNK_SERVER_URL;
   }
 
-  return WHISPER_CDN_BASE_URL;
+  return WHISPER_CDN_CHUNK_SERVER_URL;
 };
 
 export const shouldUseChunkedDownload = (baseUrl?: string): boolean => {
