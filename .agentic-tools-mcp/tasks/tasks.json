@@ -1,0 +1,328 @@
+{
+  "projects": [
+    {
+      "id": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "name": "Securitas",
+      "description": "An AI voice platform for DBS checks: records conversations, transcribes to text, and validates answers against qualifying questions to speed up customer experience.",
+      "createdAt": "2025-10-01T13:48:46.150Z",
+      "updatedAt": "2025-10-01T13:48:46.150Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "name": "Build small demo for Securitas",
+      "details": "Create a minimal end-to-end demo: capture microphone audio, transcribe with Whisper, ask DBS qualifying questions, evaluate answers, and show pass/fail summary in a simple web UI.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "completed": false,
+      "createdAt": "2025-10-01T13:49:21.824Z",
+      "updatedAt": "2025-10-01T13:49:21.824Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "demo",
+        "MVP",
+        "whisper",
+        "ui"
+      ],
+      "level": 0
+    },
+    {
+      "id": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "name": "Solve Whisper WebGPU issues",
+      "details": "Investigate and implement a robust approach for running Whisper transcription in the browser using WebGPU with fallbacks. Address performance, model size, and browser compatibility.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "completed": false,
+      "createdAt": "2025-10-01T13:49:35.102Z",
+      "updatedAt": "2025-10-01T13:49:35.102Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "research",
+        "webgpu",
+        "whisper",
+        "performance"
+      ],
+      "level": 0
+    },
+    {
+      "id": "34b714cf-fe50-4eae-8e62-3dd83269c268",
+      "name": "Define DBS qualifying questions and acceptance rules",
+      "details": "Define the minimal set of qualifying questions and acceptance criteria for the demo (e.g., identity info, recent address, consent). Capture in a single source of truth (JSON/YAML).",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "completed": false,
+      "createdAt": "2025-10-01T13:49:49.954Z",
+      "updatedAt": "2025-10-01T13:49:49.954Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "content",
+        "rules",
+        "demo"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "96595133-4ba4-438d-b252-a0aa2c685696",
+      "name": "Implement microphone capture and audio chunking",
+      "details": "Implement a small web app that captures mic audio (MediaRecorder/WebAudio), chunks it into suitable segments for streaming transcription, and handles basic UX (start/stop).",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "completed": false,
+      "createdAt": "2025-10-01T13:49:57.834Z",
+      "updatedAt": "2025-10-01T13:49:57.834Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "frontend",
+        "audio",
+        "demo"
+      ],
+      "estimatedHours": 4,
+      "level": 1
+    },
+    {
+      "id": "4bbc3700-9256-4855-aed5-91cd18022a92",
+      "name": "Integrate Whisper transcription with WebGPU or fallback",
+      "details": "Wire up transcription path: try Whisper WebGPU in-browser; if not available, fallback to WebAssembly/CPU or server-side API. Provide consistent interface.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:02.350Z",
+      "updatedAt": "2025-10-01T13:50:02.350Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "whisper",
+        "webgpu",
+        "fallback"
+      ],
+      "estimatedHours": 6,
+      "level": 1
+    },
+    {
+      "id": "f64aaf39-02a5-4397-95a3-963ed2f67b8c",
+      "name": "Implement rules engine to evaluate answers",
+      "details": "Create a simple rules evaluator that checks transcribed answers against the qualifying rules; produce pass/fail with reasons, and missing info prompts.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:08.180Z",
+      "updatedAt": "2025-10-01T13:50:08.180Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "rules",
+        "nlp",
+        "demo"
+      ],
+      "estimatedHours": 4,
+      "level": 1
+    },
+    {
+      "id": "5aae5c53-95fe-4a98-8351-63798169ea5c",
+      "name": "Simple web UI for conversation flow and results",
+      "details": "Build a minimal UI: start/stop recording, live transcript view, current question, and final pass/fail summary with reasons.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:12.271Z",
+      "updatedAt": "2025-10-01T13:50:12.271Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "ui",
+        "demo"
+      ],
+      "estimatedHours": 4,
+      "level": 1
+    },
+    {
+      "id": "0725c40f-609a-4523-9c4a-c0ebde8682bc",
+      "name": "Package demo for sharing",
+      "details": "Wrap demo into a simple static app or small server with instructions and sample questions/rules so others can run it locally.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "6c6e3b0e-ce4c-4eb8-807d-8400f57e8070",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:16.018Z",
+      "updatedAt": "2025-10-01T13:50:16.018Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "packaging",
+        "demo"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "ab990b78-0e80-4b5f-a8fd-645d2050d551",
+      "name": "Evaluate Whisper model deployment strategies",
+      "details": "Compare: in-browser WebGPU, WebAssembly, server-side inference (OpenAI Whisper API or local server). Document pros/cons, cost, latency, privacy.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:21.281Z",
+      "updatedAt": "2025-10-01T13:50:21.281Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "research",
+        "architecture",
+        "whisper"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "8f9ae3af-0744-4d0e-8a5b-8859480aee02",
+      "name": "Prototype Whisper in-browser with WebGPU",
+      "details": "Attempt running a small Whisper model via WebGPU (e.g., whisper-tiny/medium variants or distillations). Measure load time, decode speed, and accuracy.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:27.024Z",
+      "updatedAt": "2025-10-01T13:50:27.024Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "prototype",
+        "webgpu",
+        "whisper"
+      ],
+      "estimatedHours": 6,
+      "level": 1
+    },
+    {
+      "id": "4243c896-2a3b-431a-a888-d6479eae7936",
+      "name": "Implement fallback path for non-WebGPU environments",
+      "details": "Provide WebAssembly/CPU or server-side transcription fallback (e.g., whisper.cpp via WebAssembly, or a small server service). Ensure seamless switching.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:38.185Z",
+      "updatedAt": "2025-10-01T13:50:38.185Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "fallback",
+        "compatibility",
+        "whisper"
+      ],
+      "estimatedHours": 5,
+      "level": 1
+    },
+    {
+      "id": "ffad2fd1-78c7-4670-aec8-d770702509c6",
+      "name": "Performance optimization and model selection",
+      "details": "Tune model/quantization settings and chunk sizes. Select the smallest model meeting acceptable accuracy/latency for the demo.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:50:44.644Z",
+      "updatedAt": "2025-10-01T13:50:44.644Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "performance",
+        "modeling",
+        "whisper"
+      ],
+      "estimatedHours": 4,
+      "level": 1
+    },
+    {
+      "id": "bc0e1316-d909-4137-9da2-339d2d3aac5a",
+      "name": "Upgrade to whisper-small int8 model",
+      "details": "Use whisper-small int8 for better accuracy vs tiny. Ensure compatibility with Transformers.js/whisper-web pipeline and memory constraints.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:55:44.553Z",
+      "updatedAt": "2025-10-01T13:55:44.553Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "model",
+        "whisper",
+        "int8"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "a2d714a9-d57e-403c-a0eb-6ef26e080e1f",
+      "name": "Package whisper-small int8 as Zstandard archive",
+      "details": "Bundle model files into a .zst archive on server/S3. Document structure and create build script.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:55:58.590Z",
+      "updatedAt": "2025-10-01T13:55:58.590Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "packaging",
+        "zstd",
+        "model"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "a5b07567-e4a6-4119-8069-492b1b7c160c",
+      "name": "Serve model from Node/Express or S3 with caching and Range",
+      "details": "Implement Node/Express endpoint or configure S3/CloudFront to serve large model files with correct content-type, cache headers, and Range support.",
+      "projectId": "8bbabaed-5c2b-4892-86ee-d53461943f55",
+      "parentId": "10d6d010-cca9-4450-bd99-3ab997242bc1",
+      "completed": false,
+      "createdAt": "2025-10-01T13:56:06.771Z",
+      "updatedAt": "2025-10-01T13:56:06.771Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "backend",
+        "delivery",
+        "s3"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    }
+  ],
+  "subtasks": [],
+  "migration": {
+    "version": "1.8.1"
+  }
+}
