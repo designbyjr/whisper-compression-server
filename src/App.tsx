@@ -1,6 +1,8 @@
-import { SpeechToText } from './components/SpeechToText';
+import { TestPage } from '../enhanced-canvas/TestPage'
 
 export default function App() {
-  return <SpeechToText />;
+  return (
+    <TestPage />
+  )
 }
  
